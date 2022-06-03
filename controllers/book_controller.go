@@ -47,7 +47,7 @@ func CreateBook(c *gin.Context) {
 
 		return
 	}
-	err = db.Create(book).Error
+	err = db.Create(&book).Error
 
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -61,5 +61,16 @@ func CreateBook(c *gin.Context) {
 }
 
 func ShowBooks(c *gin.Context) {
+	db := database.GetDataBase()
+	var books []models.Book
+	err := db.Find(&books).Error
 
+	if err != nil {
+		c.JSON(400, gin.H{
+			"Error": "Cannot list books: " + err.Error(),
+		})
+
+		return
+	}
+	c.JSON(200, books)
 }
